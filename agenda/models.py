@@ -14,19 +14,10 @@ from django.contrib.sites.managers import CurrentSiteManager
 
 from django.contrib.sitemaps import ping_google
 
-class Location(models.Model):
-    class Meta:
-        verbose_name = _('location')
-        verbose_name_plural = _('locations')
-        ordering = ('title',)
-    
-    def __unicode__(self):
-        return self.title
-        
-    title = models.CharField(_('title'), max_length=255)
-    slug = models.SlugField(_('slug'), db_index=True)
-    
-    address = models.CharField(_('address'), max_length=255, blank=True)
+from cms.models.pluginmodel import CMSPlugin
+from taggit_autocomplete_modified.managers import TaggableManagerAutocomplete as TaggableManager
+
+
 
 class PublicationManager(CurrentSiteManager):
     def get_query_set(self):
@@ -66,9 +57,11 @@ class Event(models.Model):
     start_time = models.TimeField(_('start time'), blank=True, null=True)
     end_time = models.TimeField(_('end time'), blank=True, null=True)
     
-    location = models.ForeignKey(Location, blank=True, null=True)
+    event_url = models.URLField(_('URL'), blank=True, verify_exists=True)
+    
+    location = models.CharField(_('location'), max_length=255)
 
-    description = models.TextField(_('description'))
+    description = models.TextField(_('description'), blank=True)
 
     calendar = models.ForeignKey("Calendar", blank=True, null=True, related_name='events')
 
@@ -85,6 +78,8 @@ class Event(models.Model):
 
     sites = models.ManyToManyField(Site)
     
+    tags = TaggableManager(blank=True)
+    
     def save(self):
         super(Event, self).save()
         if not settings.DEBUG:
@@ -96,6 +91,7 @@ class Event(models.Model):
 
 class Calendar(models.Model):
     name = models.CharField(_('name'), max_length=100, blank=True, null=True)
+    slug = models.SlugField(unique=True)
 
     class Meta:
         verbose_name = _('calendar')
@@ -105,3 +101,17 @@ class Calendar(models.Model):
         if self.name:
             return self.name
         return _("Unnamed Calendar")
+
+class EventsPluginModel(CMSPlugin):
+    tags = models.CharField(max_length=240, blank=True, help_text="Comma separated")
+    calendar = models.ForeignKey("Calendar", blank=True, null=True)
+    EVENT_PLUGIN_DISPLAY_CHOICES = (
+       ('list', 'List'),
+       ('calendar', 'Calendar')
+    )
+    display_as = models.CharField(max_length=20, choices=EVENT_PLUGIN_DISPLAY_CHOICES, default=EVENT_PLUGIN_DISPLAY_CHOICES[0][0])
+    limit = models.IntegerField(default=10)
+    
+    def __unicode__(self):
+        return u'%s' % (self.tags)
+

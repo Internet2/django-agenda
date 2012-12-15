@@ -4,13 +4,6 @@ from django.utils.translation import ugettext as _
 
 from models import *
 
-class LocationAdmin(admin.ModelAdmin):
-    list_display = ('title', )
-    
-    prepopulated_fields = {"slug": ("title",)}
-    
-admin.site.register(Location, LocationAdmin)
-
 class EventAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'event_date', 'start_time', 'location', 'publish', 'calendar')
     list_display_links = ('title', )
@@ -20,9 +13,9 @@ class EventAdmin(admin.ModelAdmin):
     
     prepopulated_fields = {"slug": ("title",)}
     
-    search_fields = ('title', 'location__title', 'author__username', 'author__first_name', 'author__last_name', 'calendar')        
+    search_fields = ('title', 'location__title', 'author__username', 'author__first_name', 'author__last_name', 'calendar')
 
-    fieldsets =  ((None, {'fields': ['title', 'slug', 'event_date', 'start_time', 'end_time', 'location', 'description', 'calendar',]}),
+    fieldsets =  ((None, {'fields': ['title', 'slug', 'event_date', 'start_time', 'end_time', 'event_url', 'location', 'description', 'tags', 'calendar',]}),
                   (_('Advanced options'), {'classes' : ('collapse',),
                                            'fields'  : ('publish_date', 'publish', 'sites', 'author', 'allow_comments')}))
     
@@ -34,6 +27,8 @@ class EventAdmin(admin.ModelAdmin):
          
         return super(EventAdmin, self).formfield_for_dbfield(db_field, **kwargs)
     
+class CalendarAdmin(admin.ModelAdmin):
+    prepopulated_fields = {"slug": ("name",)}
+    
 admin.site.register(Event, EventAdmin)
-
-admin.site.register(Calendar)
+admin.site.register(Calendar, CalendarAdmin)

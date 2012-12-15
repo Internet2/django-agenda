@@ -53,17 +53,21 @@ def icalendar(request, queryset, date_field, ical_filename,
             end_time = getattr(event, end_time_field, None)
             if end_time:
                 end_date = datetime.combine(getattr(event, date_field), event.end_time)
-                vevent.add('dtend').value = end_date.replace(tzinfo = mytz)
+                # commented out for Python 2.3 compatibility
+                # TODO FIXME LOL
+                # vevent.add('dtend').value = end_date.replace(tzinfo = mytz)
+                vevent.add('dtend').value = end_date
             
         else:
             start_date = getattr(event, date_field)
-        
-        
-        vevent.add('dtstart').value = start_date.replace(tzinfo = mytz)
+
+        # vevent.add('dtstart').value = start_date.replace(tzinfo = mytz)
+        vevent.add('dtstart').value = start_date
         
         last_modified = getattr(event, last_modified_field, None)
         if last_modified:
-            vevent.add('last-modified').value = last_modified.replace(tzinfo = mytz)
+            # vevent.add('last-modified').value = last_modified.replace(tzinfo = mytz)
+            vevent.add('last-modified').value = last_modified
             
         location = getattr(event, location_field, None)
         if location:
