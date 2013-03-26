@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 from models import *
 
 class EventAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'event_date', 'start_time', 'location', 'publish', 'calendar')
+    list_display = ('title', 'author', 'event_date', 'end_date', 'location', 'publish', 'calendar')
     list_display_links = ('title', )
     list_filter = ('event_date', 'publish', 'author', 'location', 'calendar')
 
@@ -15,7 +15,7 @@ class EventAdmin(admin.ModelAdmin):
     
     search_fields = ('title', 'location__title', 'author__username', 'author__first_name', 'author__last_name', 'calendar')
 
-    fieldsets =  ((None, {'fields': ['title', 'slug', 'event_date', 'start_time', 'end_time', 'event_url', 'location', 'description', 'tags', 'calendar',]}),
+    fieldsets =  ((None, {'fields': ['title', 'slug', 'event_date', 'end_date', 'start_time', 'end_time', 'event_url', 'location', 'description', 'tags', 'calendar',]}),
                   (_('Advanced options'), {'classes' : ('collapse',),
                                            'fields'  : ('publish_date', 'publish', 'sites', 'author', 'allow_comments')}))
     

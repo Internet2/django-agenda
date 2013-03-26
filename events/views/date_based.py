@@ -112,7 +112,9 @@ def index(request, queryset, date_field,
           mimetype=None, context_processors=None):
     
     now = datetime.now()      
-    queryset = queryset.filter(event_date__gte=now - timedelta(days=1))
+    
+    queryset = queryset.filter(end_date__gte=now - timedelta(days=1)).order_by("-event_date")
+    #queryset = queryset
     logging.debug(queryset)
     return archive(request, queryset, date_field, 
                    None, None, None, 

@@ -27,7 +27,7 @@ class Event(models.Model):
     class Meta:
         verbose_name = _('event')
         verbose_name_plural = _('events')
-        ordering = ['-event_date', '-start_time', '-title']
+        ordering = ['-event_date', '-end_date', '-start_time', '-title']
         get_latest_by = 'event_date'
         permissions = (("change_author", ugettext("Change author")),)
         unique_together = ("event_date", "slug")
@@ -52,7 +52,10 @@ class Event(models.Model):
     title = models.CharField(_('title'), max_length=255)
     slug = models.SlugField(_('slug'), db_index=True)
     
-    event_date = models.DateField(_('date'))
+    event_date = models.DateField(_('date'), help_text="Enter single date here, or event start date")
+    
+    #event_date can double as start_date 
+    end_date = models.DateField(_('end date'), blank=True, null=True, help_text="Enter end date, can be blank.")
     
     start_time = models.TimeField(_('start time'), blank=True, null=True)
     end_time = models.TimeField(_('end time'), blank=True, null=True)
@@ -81,6 +84,8 @@ class Event(models.Model):
     tags = TaggableManager(blank=True)
     
     def save(self):
+        if self.end_date is None:
+            self.end_date = self.event_date
         super(Event, self).save()
         if not settings.DEBUG:
             try:
@@ -111,6 +116,7 @@ class EventsPluginModel(CMSPlugin):
     )
     display_as = models.CharField(max_length=20, choices=EVENT_PLUGIN_DISPLAY_CHOICES, default=EVENT_PLUGIN_DISPLAY_CHOICES[0][0])
     limit = models.IntegerField(default=10)
+    more = models.BooleanField(blank=True, default=True, help_text="Show more button?")
     
     def __unicode__(self):
         return u'%s' % (self.tags)
