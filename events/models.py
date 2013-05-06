@@ -97,7 +97,8 @@ class Event(models.Model):
 class Calendar(models.Model):
     name = models.CharField(_('name'), max_length=100, blank=True, null=True)
     slug = models.SlugField(unique=True)
-
+    description = models.TextField(_('description'), blank=True)
+    
     class Meta:
         verbose_name = _('calendar')
         verbose_name_plural = _('calendars')
