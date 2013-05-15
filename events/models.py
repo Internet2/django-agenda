@@ -110,7 +110,7 @@ class Calendar(models.Model):
 
 class EventsPluginModel(CMSPlugin):
     tags = models.CharField(max_length=240, blank=True, help_text="Comma separated")
-    calendar = models.ForeignKey("Calendar", blank=True, null=True)
+    calendars = models.ManyToManyField(Calendar, null=True, blank=True)
     EVENT_PLUGIN_DISPLAY_CHOICES = (
        ('list', 'List'),
        ('calendar', 'Calendar')
