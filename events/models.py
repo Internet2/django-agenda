@@ -68,6 +68,10 @@ class Event(models.Model):
 
     calendar = models.ForeignKey("Calendar", blank=True, null=True, related_name='events')
 
+    submitter = models.CharField(_('submitter'), max_length=255, blank=True)
+
+    time_zone = models.CharField(_('time_zone'), max_length=255, blank=True)
+
     # Extra fields
     add_date = models.DateTimeField(_('add date'),auto_now_add=True)
     mod_date = models.DateTimeField(_('modification date'), auto_now=True)
