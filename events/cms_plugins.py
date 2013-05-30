@@ -31,6 +31,7 @@ class EventsPlugin(CMSPluginBase):
         context['more'] = instance.more
         context['events_list'] = events[:instance.limit]
         context['display_as'] = instance.display_as
+        #self.render_template = instance.display
         return context
 
 

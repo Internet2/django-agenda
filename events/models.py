@@ -117,7 +117,8 @@ class EventsPluginModel(CMSPlugin):
     calendars = models.ManyToManyField(Calendar, null=True, blank=True)
     EVENT_PLUGIN_DISPLAY_CHOICES = (
        ('list', 'List'),
-       ('calendar', 'Calendar')
+       ('calendar', 'Calendar'),
+       ('upcoming', 'Upcoming events div')
     )
     display_as = models.CharField(max_length=20, choices=EVENT_PLUGIN_DISPLAY_CHOICES, default=EVENT_PLUGIN_DISPLAY_CHOICES[0][0])
     limit = models.IntegerField(default=10)
