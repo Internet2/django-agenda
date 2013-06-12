@@ -127,3 +127,5 @@ class EventsPluginModel(CMSPlugin):
     def __unicode__(self):
         return u'%s' % (self.tags)
 
+    def copy_relations(self, oldinstance):
+        self.calendars = oldinstance.calendars.all()
