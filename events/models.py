@@ -120,6 +120,10 @@ class EventsPluginModel(CMSPlugin):
        ('calendar', 'Calendar'),
        ('upcoming', 'Upcoming events div')
     )
+
+    date_start = models.DateTimeField("Start date", blank=True, null=True)
+    date_end = models.DateTimeField("End date", blank=True, null=True)
+
     display_as = models.CharField(max_length=20, choices=EVENT_PLUGIN_DISPLAY_CHOICES, default=EVENT_PLUGIN_DISPLAY_CHOICES[0][0])
     limit = models.IntegerField(default=10)
     more = models.BooleanField(blank=True, default=True, help_text="Show more button?")
