@@ -25,8 +25,6 @@ class EventsPlugin(CMSPluginBase):
             now = datetime.now()      
             events = events.filter(end_date__gte=now - timedelta(days=1))
 
-        print instance.display_date_as
-
         if instance.display_date_as == "descending":
             events = events.order_by("-event_date")
         else:
