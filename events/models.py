@@ -121,8 +121,14 @@ class EventsPluginModel(CMSPlugin):
        ('upcoming', 'Upcoming events div')
     )
 
+    EVENT_PLUGIN_DATE_DISPLAY_CHOICES = (
+        ('descending', 'Descending'),
+        ('ascending', 'Ascending')
+    )
+
     date_start = models.DateTimeField("Start date", blank=True, null=True)
     date_end = models.DateTimeField("End date", blank=True, null=True)
+    display_date_as = models.CharField(max_length=20, choices=EVENT_PLUGIN_DATE_DISPLAY_CHOICES, default=EVENT_PLUGIN_DATE_DISPLAY_CHOICES[0][0]) 
 
     display_as = models.CharField(max_length=20, choices=EVENT_PLUGIN_DISPLAY_CHOICES, default=EVENT_PLUGIN_DISPLAY_CHOICES[0][0])
     limit = models.IntegerField(default=10)
