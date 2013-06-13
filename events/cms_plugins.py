@@ -14,15 +14,20 @@ class EventsPlugin(CMSPluginBase):
     
     def render(self, context, instance, placeholder):
         events = Event.objects.all()
+        now = datetime.now()      
 
-        if instance.date_start:
+        if instance.date_start_today:
+            events = events.filter(event_date__gte = now)
+        elif instance.date_start:
             events = events.filter(event_date__gte = instance.date_start)
 
-        if instance.date_end:
+        if instance.date_end_yesterday:
+           events = events.filter(end_date__lte=now - timedelta(days=1))
+        elif instance.date_end:
             events = events.filter(end_date__lte = instance.date_end)
 
+        # Default
         if instance.date_start == None and instance.date_end == None:
-            now = datetime.now()      
             events = events.filter(end_date__gte=now - timedelta(days=1))
 
         if instance.display_date_as == "descending":
