@@ -27,7 +27,7 @@ class EventsPlugin(CMSPluginBase):
             events = events.filter(end_date__lte = instance.date_end)
 
         # Default
-        if instance.date_start == None and instance.date_end == None:
+        if not instance.date_start_today and not instance.date_end_yesterday and instance.date_start == None and instance.date_end == None:
             events = events.filter(end_date__gte=now - timedelta(days=1))
 
         if instance.display_date_as == "descending":
