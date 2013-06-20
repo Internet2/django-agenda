@@ -4,6 +4,20 @@ from django.utils.translation import ugettext as _
 
 from models import *
 
+from taggit.models import Tag
+
+from django import forms
+from django.contrib.admin.widgets import FilteredSelectMultiple
+
+class EventAdminForm(forms.ModelForm):
+    tags = forms.ModelMultipleChoiceField(
+        Tag.objects.all().order_by("name"),
+        widget=FilteredSelectMultiple("tags", False),
+        required=False)
+
+    class Meta:
+        model = Event
+ 
 class EventAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'event_date', 'end_date', 'location', 'publish', 'calendar')
     list_display_links = ('title', )
@@ -19,6 +33,8 @@ class EventAdmin(admin.ModelAdmin):
                   (_('Advanced options'), {'classes' : ('collapse',),
                                            'fields'  : ('publish_date', 'publish', 'sites', 'author', 'allow_comments')}))
     
+    form = EventAdminForm
+
     # This is a dirty hack, this belongs inside of the model but defaults don't work on M2M
     def formfield_for_dbfield(self, db_field, **kwargs):
         """ Makes sure that by default all sites are selected. """

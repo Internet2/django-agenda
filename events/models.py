@@ -15,9 +15,9 @@ from django.contrib.sites.managers import CurrentSiteManager
 from django.contrib.sitemaps import ping_google
 
 from cms.models.pluginmodel import CMSPlugin
-from taggit_autocomplete_modified.managers import TaggableManagerAutocomplete as TaggableManager
 
-
+from taggit.models import Tag
+ 
 
 class PublicationManager(CurrentSiteManager):
     def get_query_set(self):
@@ -85,7 +85,7 @@ class Event(models.Model):
 
     sites = models.ManyToManyField(Site)
     
-    tags = TaggableManager(blank=True)
+    tags = models.ManyToManyField(Tag, blank=True)
     
     def save(self):
         if self.end_date is None:
