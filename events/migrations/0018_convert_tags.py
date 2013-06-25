@@ -14,8 +14,11 @@ class Migration(DataMigration):
         for plugin in orm['events.eventspluginmodel'].objects.all():
             tags = split_tags_list(plugin.old_tags)
             for tag in tags:
-                tag = orm['taggit.Tag'].objects.get(name=tag)
-                plugin.tags.add(tag)
+                try:
+                    tag = orm['taggit.Tag'].objects.get(name=tag)
+                    plugin.tags.add(tag)
+                except:
+                    pass
 
     def backwards(self, orm):
         "Write your backwards methods here."
