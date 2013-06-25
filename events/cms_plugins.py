@@ -4,14 +4,32 @@ from datetime import datetime, timedelta
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Q
 import operator
+from django import forms
+from django.contrib.admin.widgets import FilteredSelectMultiple
+
+from taggit.models import Tag
 
 from events.models import Event, Calendar, EventsPluginModel
 
+class EventsPluginForm(forms.ModelForm):
+    tags = forms.ModelMultipleChoiceField(
+        Tag.objects.all().order_by("name"),
+        widget=FilteredSelectMultiple("tags", False),
+        required=False)
+    calendars = forms.ModelMultipleChoiceField(
+        Calendar.objects.all().order_by("name"),
+        widget=FilteredSelectMultiple("calendars", False),
+        required=False)
+
+    class Meta:
+        model = EventsPluginModel
+ 
 class EventsPlugin(CMSPluginBase):
     model = EventsPluginModel
     name = _("Events")
     render_template = "events_plugin.html"
-    
+    form = EventsPluginForm
+ 
     def render(self, context, instance, placeholder):
         events = Event.objects.all()
         now = datetime.now()      
@@ -35,11 +53,8 @@ class EventsPlugin(CMSPluginBase):
         else:
             events = events.order_by("event_date")
 
-        if (instance.tags):
-            filters = []
-            for tag in instance.tags.split(','):
-                filters.append(tag.strip())
-            events = events.filter(tags__name__in = filters).distinct()
+        if len(instance.tags.all()) > 0:
+            events = events.filter(tags__in = instance.tags.all()).distinct()
 
         if instance.calendars.count() > 0:
             calendar_filters = []
