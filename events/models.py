@@ -113,6 +113,7 @@ class Calendar(models.Model):
         return _("Unnamed Calendar")
 
 class EventsPluginModel(CMSPlugin):
+    use_page_tags = models.BooleanField(default=False)
     tags = models.ManyToManyField(Tag, blank=True)
     calendars = models.ManyToManyField(Calendar, null=True, blank=True)
     EVENT_PLUGIN_DISPLAY_CHOICES = (
