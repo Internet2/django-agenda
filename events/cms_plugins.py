@@ -6,7 +6,7 @@ from django.db.models import Q
 import operator
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
-from plaza2.apps.bloat.library import get_page_tags
+from plaza2.apps.bloat.library import limit_object_list, build_tags_list, get_page_tags
 
 from taggit.models import Tag
 
@@ -87,9 +87,13 @@ class EventsPlugin(CMSPluginBase):
 
         #print "Events (post-calendars): %s" % events
 
-        context['more'] = instance.more
-        context['events_list'] = events[:instance.limit]
+        events, has_more = limit_object_list(events, limit=instance.limit)
+
+        context['events_list'] = events
+        if instance.more:
+            context['more'] = has_more
         context['display_as'] = instance.display_as
+        context['tags_str'] = build_tags_list(tag_filters)
         #self.render_template = instance.display
         return context
 
