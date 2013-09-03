@@ -94,6 +94,7 @@ class EventsPlugin(CMSPluginBase):
             context['more'] = has_more
         context['display_as'] = instance.display_as
         context['tags_str'] = build_tags_list(tag_filters)
+        context['calendars_str'] = build_tags_list(instance.calendars.all())
         #self.render_template = instance.display
         return context
 

@@ -124,7 +124,7 @@ def index(request, queryset, date_field,
                    num_objects, extra_context, True,
                    mimetype, context_processors)
 
-def by_tag(request, queryset, date_field, tag_list=None,
+def by_tag(request, queryset, date_field, calendar_list=None, tag_list=None,
           template_name=None, template_object_name='object', template_loader=loader,
           num_objects=5, extra_context=None,
           mimetype=None, context_processors=None):
@@ -133,13 +133,20 @@ def by_tag(request, queryset, date_field, tag_list=None,
     
     tags = split_tags_list(tag_list)
 
+    calendars = split_tags_list(calendar_list)
+
     queryset = queryset.filter(end_date__gte=now - timedelta(days=1)).order_by("-event_date")
 
     #print "Query: %s" % queryset.all()
 
-    if len(tag_list) > 0:
+    if len(tags) > 0:
         #print "Tag List: %s" % tag_list
         queryset = queryset.filter(tags__slug__in=tags)
+
+    if len(calendars) > 0:
+        #print "Calendar List: %s" % calendar_list
+        queryset = queryset.filter(calendar__slug__in=calendars)
+
 
     #print "Query (post-tags): %s" % queryset.all()
 
