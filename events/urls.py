@@ -14,7 +14,6 @@ urlpatterns = patterns('events.views.date_based',
     url(r'^(?P<year>\d{4})/(?P<month>\d{1,2})/$',                                   'archive',       info_dict,  name='agenda-archive-month'),
     url(r'^(?P<year>\d{4})/$',                                                      'archive',       info_dict,  name='agenda-archive-year'),
     url(r'^$',                                                                      'index',         info_dict,  name='agenda-index'),
-    url(r'^by_tags/(?P<calendar_list>[^//]+)/(?P<tag_list>[^//]+)$',                'by_tag',        info_dict,  name='agenda-bytags'),
 )
 
 ical_dict = {
@@ -30,3 +29,8 @@ ical_dict = {
 urlpatterns += patterns('events.views.vobject_django',
     url(r'^calendar.ics$',                                                          'icalendar',     ical_dict,  name='agenda-icalendar'),
 )
+
+urlpatterns = patterns('events.views.custom',
+    url(r'^by_tags/(?P<calendar_list>[^//]+)/(?P<tag_list>[^//]+)/(?P<ordering>[^//]+)/(?P<start_date_range>[^//]+)/(?P<end_date_range>[^//]+)/(?P<page>[^//]+)$', 'by_tags'),
+)
+

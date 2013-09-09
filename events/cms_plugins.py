@@ -12,6 +12,8 @@ from taggit.models import Tag
 
 from events.models import Event, Calendar, EventsPluginModel
 
+from library import query_events, output_date_range
+
 class EventsPluginForm(forms.ModelForm):
     tags = forms.ModelMultipleChoiceField(
         Tag.objects.all().order_by("name"),
@@ -33,58 +35,39 @@ class EventsPlugin(CMSPluginBase):
  
     def render(self, context, instance, placeholder):
         events = Event.objects.all()
-        now = datetime.now()      
 
         #print "Events: %s" % events
 
-        if instance.date_start_today:
-            events = events.filter(event_date__gte = now)
-        elif instance.date_start:
-            events = events.filter(event_date__gte = instance.date_start)
+        min_start_date = None
+        max_start_date = None
+        min_end_date   = None
+        max_end_date   = None
 
-        #print "Events (post-start date): %s" % events
+        if instance.date_start_today:
+            min_start_date = datetime.now()
+        elif instance.date_start:
+            min_start_date = instance.date_start
 
         if instance.date_end_yesterday:
-           events = events.filter(end_date__lte=now - timedelta(days=1))
+            max_end_date = datetime.now() - timedelta(days=1)
         elif instance.date_end:
-            events = events.filter(end_date__lte = instance.date_end)
-
-        #print "Events (post-end date): %s" % events
+            max_end_date = instance.date_end
 
         # Default
         if not instance.date_start_today and not instance.date_end_yesterday and instance.date_start == None and instance.date_end == None:
-            events = events.filter(end_date__gte=now - timedelta(days=1))
+            min_end_date = datetime.now() - timedelta(days=1)
 
-        #print "Events (post-default dates): %s" % events
-
-        if instance.display_date_as == "descending":
-            events = events.order_by("-event_date")
-        else:
-            events = events.order_by("event_date")
-
-        #print "Events (ordering): %s" % events
-
-        tag_filters = []
-
+        tags = []
         if instance.use_page_tags:
-            #print "Using Page Tags: %s" % get_page_tags(instance.page)
-            tag_filters.extend(get_page_tags(instance.page))
+            tags.extend(map(lambda x: x.slug, get_page_tags(instance.page)))
+        tags.extend(map(lambda x: x.slug, instance.tags.all()))
 
-        tag_filters.extend(instance.tags.all())
+        calendars = map(lambda x: x.slug, instance.calendars.all())
 
-        if len(tag_filters) > 0:
-            #print "Events (tag filters): %s" % tag_filters
-
-            events = events.filter(tags__in = tag_filters).distinct()
+        events = query_events(calendars=calendars, tags=tags, ordering=instance.display_date_as,
+                          min_start_date=min_start_date, max_start_date=max_start_date,
+                          min_end_date=min_end_date, max_end_date=max_end_date)
  
-        #print "Events (post-tag filters): %s" % events
-
-        if instance.calendars.count() > 0:
-            calendar_filters = []
-            for calendar in instance.calendars.all():
-                calendar_filters.append(Q(calendar = calendar))
-            events = events.filter(reduce(operator.or_, calendar_filters))
-
         #print "Events (post-calendars): %s" % events
 
         events, has_more = limit_object_list(events, limit=instance.limit)
@@ -93,8 +76,11 @@ class EventsPlugin(CMSPluginBase):
         if instance.more:
             context['more'] = has_more
         context['display_as'] = instance.display_as
-        context['tags_str'] = build_tags_list(tag_filters)
+        context['tags_str'] = build_tags_list(map(lambda x: Tag.objects.get(slug=x), tags))
         context['calendars_str'] = build_tags_list(instance.calendars.all())
+        context['ordering_str'] = instance.display_as
+        context['start_date_str'] = output_date_range([ min_start_date, max_start_date ])
+        context['end_date_str'] = output_date_range([ min_end_date, max_end_date ])
         #self.render_template = instance.display
         return context
 

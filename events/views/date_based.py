@@ -7,8 +7,6 @@ from dateutil.relativedelta import relativedelta
 from django.http import Http404, HttpResponse
 from django.template import loader, RequestContext
 
-from plaza2.apps.tagfilters.library import split_tags_list
-
 def process_context(context, extra_context):
     for key, value in extra_context.items():
         if callable(value):
@@ -123,41 +121,6 @@ def index(request, queryset, date_field,
                    template_name, template_object_name, template_loader,
                    num_objects, extra_context, True,
                    mimetype, context_processors)
-
-def by_tag(request, queryset, date_field, calendar_list=None, tag_list=None,
-          template_name=None, template_object_name='object', template_loader=loader,
-          num_objects=5, extra_context=None,
-          mimetype=None, context_processors=None):
-   
-    now = datetime.now()      
-    
-    tags = split_tags_list(tag_list)
-
-    calendars = split_tags_list(calendar_list)
-
-    queryset = queryset.filter(end_date__gte=now - timedelta(days=1)).order_by("-event_date")
-
-    #print "Query: %s" % queryset.all()
-
-    if len(tags) > 0:
-        #print "Tag List: %s" % tag_list
-        queryset = queryset.filter(tags__slug__in=tags)
-
-    if len(calendars) > 0:
-        #print "Calendar List: %s" % calendar_list
-        queryset = queryset.filter(calendar__slug__in=calendars)
-
-
-    #print "Query (post-tags): %s" % queryset.all()
-
-    #queryset = queryset
-    logging.debug(queryset)
-    return archive(request, queryset, date_field, 
-                   None, None, None, 
-                   template_name, template_object_name, template_loader,
-                   num_objects, extra_context, True,
-                   mimetype, context_processors)
-
 
 def object_detail(request, queryset, date_field, 
                   year, month, day, slug, 
