@@ -28,7 +28,7 @@ class EventAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     
     #search_fields = ('title', 'location__title', 'author__username', 'author__first_name', 'author__last_name', 'calendar')
-    search_fields = ('title', 'author__username', 'author__first_name', 'author__last_name', 'calendar')
+    search_fields = ('title', 'location', 'author__username', 'author__first_name', 'author__last_name', 'calendar__name')
 
     fieldsets =  ((None, {'fields': ['title', 'slug', 'event_date', 'end_date', 'start_time', 'end_time', 'event_url', 'location', 'description', 'tags', 'calendar',]}),
                   (_('Advanced options'), {'classes' : ('collapse',),
