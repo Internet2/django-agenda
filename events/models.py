@@ -72,7 +72,7 @@ class Event(models.Model):
 
     time_zone = models.CharField(_('time_zone'), max_length=255, blank=True)
 
-    old_events_id = models.TextField(_('old_events_id'), blank=True, help_text="The identifier from the old events database")
+    old_events_id = models.IntegerField(_('old_events_id'), unique=True, null=True, blank=True, help_text="The identifier from the old events database")
 
     # Extra fields
     add_date = models.DateTimeField(_('add date'),auto_now_add=True)
