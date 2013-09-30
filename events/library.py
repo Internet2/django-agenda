@@ -34,39 +34,41 @@ def query_events(calendars=None, tags=None, ordering="ascending",
 
     events = Event.objects.all()
 
-    print "Query: %s" % events.all()
+#    print "Query: %s" % events.all()
 
     if len(tags) > 0:
-        print "Events Tag List: %s" % tags
+#        print "Events Tag List: %s" % tags
         events = events.filter(tags__slug__in=tags)
 
-    print "Query (post-tags): %s" % events.all()
+#    print "Query (post-tags): %s" % events.all()
 
     if len(calendars) > 0:
-        print "Calendar List: %s" % calendars
+#        print "Calendar List: %s" % calendars
         events = events.filter(calendar__slug__in=calendars)
 
-    print "Query (post-calendars): %s" % events.all()
+#    print "Query (post-calendars): %s" % events.all()
 
     if min_start_date:
         events = events.filter(event_date__gte = min_start_date)
     if max_start_date:
         events = events.filter(event_date__lte = max_start_date)
 
-    print "Query (post-start): %s" % events.all()
+#    print "Query (post-start): %s" % events.all()
 
     if min_end_date:
         events = events.filter(end_date__gte = min_end_date)
     if max_end_date:
         events = events.filter(end_date__lte = max_end_date)
 
-    print "Query (post-end): %s" % events.all()
+#    print "Query (post-end): %s" % events.all()
 
     if ordering == "descending":
         events = events.order_by("event_date")
     else:
         events = events.order_by("-event_date")
 
-    print "Query (post-ordering): %s" % events.all()
+    events = events.distinct()
+
+#    print "Query (post-ordering): %s" % events.all()
 
     return events
