@@ -63,9 +63,9 @@ def query_events(calendars=None, tags=None, ordering="ascending",
 #    print "Query (post-end): %s" % events.all()
 
     if ordering == "descending":
-        events = events.order_by("event_date")
-    else:
         events = events.order_by("-event_date")
+    else:
+        events = events.order_by("event_date")
 
     events = events.distinct()
 
