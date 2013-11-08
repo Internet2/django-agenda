@@ -1,6 +1,7 @@
 import logging 
 
 from datetime import datetime, timedelta
+from django.utils import timezone
 
 from dateutil.relativedelta import relativedelta
 
@@ -111,7 +112,7 @@ def index(request, queryset, date_field,
           num_objects=5, extra_context=None,
           mimetype=None, context_processors=None):
     
-    now = datetime.now()      
+    now = timezone.now()      
     
     queryset = queryset.filter(end_date__gte=now - timedelta(days=1)).order_by("-event_date")
     #queryset = queryset

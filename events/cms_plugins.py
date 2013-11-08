@@ -2,6 +2,7 @@ from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
 from datetime import datetime, timedelta
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 from django.db.models import Q
 import operator
 from django import forms
@@ -44,18 +45,18 @@ class EventsPlugin(CMSPluginBase):
         max_end_date   = None
 
         if instance.date_start_today:
-            min_start_date = datetime.now()
+            min_start_date = timezone.now()
         elif instance.date_start:
             min_start_date = instance.date_start
 
         if instance.date_end_yesterday:
-            max_end_date = datetime.now() - timedelta(days=1)
+            max_end_date = timezone.now() - timedelta(days=1)
         elif instance.date_end:
             max_end_date = instance.date_end
 
         # Default
         if not instance.date_start_today and not instance.date_end_yesterday and instance.date_start == None and instance.date_end == None:
-            min_end_date = datetime.now() - timedelta(days=1)
+            min_end_date = timezone.now() - timedelta(days=1)
 
         tags = []
         if instance.use_page_tags:

@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.utils import timezone
 
 from django.db import models
 
@@ -21,7 +22,7 @@ from taggit.models import Tag
 
 class PublicationManager(CurrentSiteManager):
     def get_query_set(self):
-        return super(CurrentSiteManager, self).get_query_set().filter(publish=True, publish_date__lte=datetime.now())
+        return super(CurrentSiteManager, self).get_query_set().filter(publish=True, publish_date__lte=timezone.now())
 
 class Event(models.Model):
     class Meta:
@@ -80,7 +81,7 @@ class Event(models.Model):
     
     author = models.ForeignKey(User, verbose_name=_('author'), db_index=True, blank=True, null=True)
 
-    publish_date = models.DateTimeField(_('publication date'), default=datetime.now())
+    publish_date = models.DateTimeField(_('publication date'), default=timezone.now())
     publish = models.BooleanField(_('publish'), default=True)
     
     allow_comments = models.BooleanField(_('Allow comments'), default=True)

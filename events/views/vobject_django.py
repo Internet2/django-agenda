@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-
+from django.utils import timezone
 from django.utils.html import strip_tags
 from django.http import HttpResponse
 from django.utils.tzinfo import FixedOffset
@@ -13,7 +13,7 @@ def icalendar(request, queryset, date_field, ical_filename,
               num_objects=15, extra_context=None,
               mimetype=None, context_processors=None):
     
-    now = datetime.now()      
+    now = timezone.now()      
     queryset = queryset.filter(event_date__gte=now - timedelta(days=1))
     
     cal = vobject.iCalendar()
@@ -22,7 +22,7 @@ def icalendar(request, queryset, date_field, ical_filename,
     cal.add('method').value = 'PUBLISH'  # IE/Outlook needs this
     
     # Timezone code borrowed from 
-    now = datetime.now()
+    now = timezone.now()
     utcnow = datetime.utcnow()
     # Must always subtract smaller time from larger time here.
     if utcnow > now:
