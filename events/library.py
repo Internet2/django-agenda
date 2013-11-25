@@ -30,7 +30,7 @@ def output_date_range(range):
     return range_str
 
 def query_events(calendars=None, tags=None, ordering="ascending",
-           min_start_date=None, max_start_date=None, min_end_date=None, max_end_date=None):
+           start_date=None, end_date=None):
 
     events = Event.objects.all()
 
@@ -48,19 +48,14 @@ def query_events(calendars=None, tags=None, ordering="ascending",
 
 #    print "Query (post-calendars): %s" % events.all()
 
-    if min_start_date:
-        events = events.filter(event_date__gte = min_start_date)
-    if max_start_date:
-        events = events.filter(event_date__lte = max_start_date)
+    if start_date and end_date:
+        events = events.filter(Q(end_date__gte = start_date), Q(event_date__lte = end_date))
+    elif start_date:
+        events = events.filter(end_date__gte = start_date)
+    elif end_date:
+        events = events.filter(end_date__lte = end_date)
 
-#    print "Query (post-start): %s" % events.all()
-
-    if min_end_date:
-        events = events.filter(end_date__gte = min_end_date)
-    if max_end_date:
-        events = events.filter(end_date__lte = max_end_date)
-
-#    print "Query (post-end): %s" % events.all()
+#    print "Query (post-dates): %s" % events.all()
 
     if ordering == "descending":
         events = events.order_by("-event_date")
