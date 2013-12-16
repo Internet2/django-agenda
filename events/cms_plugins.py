@@ -39,22 +39,24 @@ class EventsPlugin(CMSPluginBase):
 
         #print "Events: %s" % events
 
-        start_date = None
-        end_date   = None
+        min_start_date = None
+        max_start_date = None
+        min_end_date   = None
+        max_end_date   = None
 
         if instance.date_start_today:
-            start_date = timezone.now()
+            min_start_date = timezone.now()
         elif instance.date_start:
-            start_date = instance.date_start
+            min_start_date = instance.date_start
 
         if instance.date_end_yesterday:
-            end_date = timezone.now() - timedelta(days=1)
+            max_end_date = timezone.now() - timedelta(days=1)
         elif instance.date_end:
-            end_date = instance.date_end
+            max_end_date = instance.date_end
 
         # Default
         if not instance.date_start_today and not instance.date_end_yesterday and instance.date_start == None and instance.date_end == None:
-            end_date = timezone.now() - timedelta(days=1)
+            min_end_date = timezone.now() - timedelta(days=1)
 
         tags = []
         if instance.use_page_tags:
