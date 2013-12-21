@@ -61,7 +61,7 @@ class Event(models.Model):
     start_time = models.TimeField(_('start time'), blank=True, null=True)
     end_time = models.TimeField(_('end time'), blank=True, null=True)
     
-    event_url = models.URLField(_('URL'), blank=True, verify_exists=True)
+    event_url = models.URLField(_('URL'), blank=True) #, verify_exists=True)
     
     location = models.CharField(_('location'), max_length=255)
 
