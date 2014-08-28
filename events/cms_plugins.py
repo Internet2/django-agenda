@@ -45,7 +45,7 @@ class EventsPlugin(CMSPluginBase):
         max_end_date   = None
 
         if instance.date_start_today:
-            min_start_date = timezone.now()
+            min_end_date   = timezone.now()
         elif instance.date_start:
             min_start_date = instance.date_start
 

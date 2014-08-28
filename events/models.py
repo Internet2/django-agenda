@@ -130,9 +130,9 @@ class EventsPluginModel(CMSPlugin):
         ('ascending', 'Ascending')
     )
 
-    date_start_today = models.BooleanField(blank=True, default=False, help_text="Show events starting today?")
+    date_start_today = models.BooleanField(blank=True, default=False, help_text="Show current and future events as of 'today'?")
     date_start = models.DateTimeField("Start date", blank=True, null=True)
-    date_end_yesterday = models.BooleanField(blank=True, default=False, help_text="Show events ending yesterday?")
+    date_end_yesterday = models.BooleanField(blank=True, default=False, help_text="Show events that are over as of 'today'?")
     date_end = models.DateTimeField("End date", blank=True, null=True)
     display_date_as = models.CharField(max_length=20, choices=EVENT_PLUGIN_DATE_DISPLAY_CHOICES, default=EVENT_PLUGIN_DATE_DISPLAY_CHOICES[0][0]) 
 
