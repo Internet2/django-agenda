@@ -144,4 +144,5 @@ class EventsPluginModel(CMSPlugin):
         return u'%s' % (self.tags)
 
     def copy_relations(self, oldinstance):
+        self.tags = oldinstance.tags.all()
         self.calendars = oldinstance.calendars.all()
