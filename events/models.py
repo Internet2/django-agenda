@@ -151,7 +151,7 @@ class EventsPluginModel(CMSPlugin):
     more = models.BooleanField(blank=True, default=True, help_text="Show more button?")
     
     def __unicode__(self):
-        return u'%s' % (self.tags)
+        return u'%s' % (self.tags.all())
 
     def copy_relations(self, oldinstance):
         self.tags = oldinstance.tags.all()
