@@ -17,7 +17,6 @@ class EventAdminForm(forms.ModelForm):
 
     class Meta:
         model = Event
-        fields = "__all__"
  
 class EventAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'event_date', 'end_date', 'location', 'publish', 'calendar')

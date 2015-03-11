@@ -18,14 +18,10 @@ from django.contrib.sitemaps import ping_google
 from cms.models.pluginmodel import CMSPlugin
 
 from taggit.models import Tag
-
-#NOW=datetime.now().replace(tzinfo=timezone.utc) 
-NOW=datetime.now()
+ 
 
 class PublicationManager(CurrentSiteManager):
-# renaming per django 1.6 PendingDepreciationWarning
-#    def get_query_set(self):
-    def get_queryset(self):
+    def get_query_set(self):
         return super(CurrentSiteManager, self).get_query_set().filter(publish=True, publish_date__lte=timezone.now())
 
 class Event(models.Model):
@@ -80,15 +76,12 @@ class Event(models.Model):
     old_events_id = models.IntegerField(_('old_events_id'), unique=True, null=True, blank=True, help_text="The identifier from the old events database")
 
     # Extra fields
-#    add_date = models.DateTimeField(_('add date'),auto_now_add=True)
-#    mod_date = models.DateTimeField(_('modification date'), auto_now=True)
-# These fields get set in save method
-    add_date = models.DateTimeField(_('add date'), editable=False, blank=True)
-    mod_date = models.DateTimeField(_('modification date'), editable=False, blank=True)
+    add_date = models.DateTimeField(_('add date'),auto_now_add=True)
+    mod_date = models.DateTimeField(_('modification date'), auto_now=True)
     
     author = models.ForeignKey(User, verbose_name=_('author'), db_index=True, blank=True, null=True)
 
-    publish_date = models.DateTimeField(_('publication date'), default=NOW)
+    publish_date = models.DateTimeField(_('publication date'), default=timezone.now())
     publish = models.BooleanField(_('publish'), default=True)
     
     allow_comments = models.BooleanField(_('Allow comments'), default=True)
@@ -98,9 +91,6 @@ class Event(models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
     
     def save(self):
-        if not self.id:
-            self.add_date = NOW
-        self.mod_date = NOW
         if self.end_date is None:
             self.end_date = self.event_date
         super(Event, self).save()
@@ -151,7 +141,7 @@ class EventsPluginModel(CMSPlugin):
     more = models.BooleanField(blank=True, default=True, help_text="Show more button?")
     
     def __unicode__(self):
-        return u'%s' % (self.tags.all())
+        return u'%s' % (self.tags)
 
     def copy_relations(self, oldinstance):
         self.tags = oldinstance.tags.all()

@@ -9,57 +9,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'Event'
-        db.create_table('events_event', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(max_length=50)),
-            ('event_date', self.gf('django.db.models.fields.DateField')()),
-            ('start_time', self.gf('django.db.models.fields.TimeField')(null=True, blank=True)),
-            ('end_time', self.gf('django.db.models.fields.TimeField')(null=True, blank=True)),
-            ('location', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('calendar', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='events', null=True, to=orm['events.Calendar'])),
-            ('add_date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('mod_date', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('author', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True, blank=True)),
-            ('publish_date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2012, 11, 6, 0, 0))),
-            ('publish', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('allow_comments', self.gf('django.db.models.fields.BooleanField')(default=True)),
-        ))
-        db.send_create_signal('events', ['Event'])
-
-        # Adding unique constraint on 'Event', fields ['event_date', 'slug']
-        db.create_unique('events_event', ['event_date', 'slug'])
-
-        # Adding M2M table for field sites on 'Event'
-        db.create_table('events_event_sites', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('event', models.ForeignKey(orm['events.event'], null=False)),
-            ('site', models.ForeignKey(orm['sites.site'], null=False))
-        ))
-        db.create_unique('events_event_sites', ['event_id', 'site_id'])
-
-        # Adding model 'Calendar'
-        db.create_table('events_calendar', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
-        ))
-        db.send_create_signal('events', ['Calendar'])
+        # Adding field 'Event.old_events_id'
+        db.add_column('events_event', 'old_events_id',
+                      self.gf('django.db.models.fields.TextField')(default='', blank=True),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Removing unique constraint on 'Event', fields ['event_date', 'slug']
-        db.delete_unique('events_event', ['event_date', 'slug'])
-
-        # Deleting model 'Event'
-        db.delete_table('events_event')
-
-        # Removing M2M table for field sites on 'Event'
-        db.delete_table('events_event_sites')
-
-        # Deleting model 'Calendar'
-        db.delete_table('events_calendar')
+        # Deleting field 'Event.old_events_id'
+        db.delete_column('events_event', 'old_events_id')
 
 
     models = {
@@ -92,6 +50,27 @@ class Migration(SchemaMigration):
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
+        'cms.cmsplugin': {
+            'Meta': {'object_name': 'CMSPlugin'},
+            'changed_date': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+            'creation_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.timezone.now'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'language': ('django.db.models.fields.CharField', [], {'max_length': '15', 'db_index': 'True'}),
+            'level': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
+            'lft': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
+            'parent': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['cms.CMSPlugin']", 'null': 'True', 'blank': 'True'}),
+            'placeholder': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['cms.Placeholder']", 'null': 'True'}),
+            'plugin_type': ('django.db.models.fields.CharField', [], {'max_length': '50', 'db_index': 'True'}),
+            'position': ('django.db.models.fields.PositiveSmallIntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'rght': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
+            'tree_id': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'})
+        },
+        'cms.placeholder': {
+            'Meta': {'object_name': 'Placeholder'},
+            'default_width': ('django.db.models.fields.PositiveSmallIntegerField', [], {'null': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'slot': ('django.db.models.fields.CharField', [], {'max_length': '50', 'db_index': 'True'})
+        },
         'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
             'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
@@ -101,33 +80,62 @@ class Migration(SchemaMigration):
         },
         'events.calendar': {
             'Meta': {'object_name': 'Calendar'},
+            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'})
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50'})
         },
         'events.event': {
-            'Meta': {'ordering': "['-event_date', '-start_time', '-title']", 'unique_together': "(('event_date', 'slug'),)", 'object_name': 'Event'},
+            'Meta': {'ordering': "['-event_date', '-end_date', '-start_time', '-title']", 'unique_together': "(('event_date', 'slug'),)", 'object_name': 'Event'},
             'add_date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'allow_comments': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'author': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True', 'blank': 'True'}),
             'calendar': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'events'", 'null': 'True', 'to': "orm['events.Calendar']"}),
             'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            'end_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'end_time': ('django.db.models.fields.TimeField', [], {'null': 'True', 'blank': 'True'}),
             'event_date': ('django.db.models.fields.DateField', [], {}),
+            'event_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'location': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'mod_date': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+            'old_events_id': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'publish': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'publish_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2012, 11, 6, 0, 0)'}),
+            'publish_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 9, 19, 0, 0)'}),
             'sites': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['sites.Site']", 'symmetrical': 'False'}),
             'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50'}),
             'start_time': ('django.db.models.fields.TimeField', [], {'null': 'True', 'blank': 'True'}),
+            'submitter': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'tags': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['taggit.Tag']", 'symmetrical': 'False', 'blank': 'True'}),
+            'time_zone': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '255'})
+        },
+        'events.eventspluginmodel': {
+            'Meta': {'object_name': 'EventsPluginModel', 'db_table': "'cmsplugin_eventspluginmodel'", '_ormbases': ['cms.CMSPlugin']},
+            'calendars': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['events.Calendar']", 'null': 'True', 'blank': 'True'}),
+            'cmsplugin_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['cms.CMSPlugin']", 'unique': 'True', 'primary_key': 'True'}),
+            'date_end': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'date_end_yesterday': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'date_start': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'date_start_today': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'display_as': ('django.db.models.fields.CharField', [], {'default': "'list'", 'max_length': '20'}),
+            'display_date_as': ('django.db.models.fields.CharField', [], {'default': "'descending'", 'max_length': '20'}),
+            'limit': ('django.db.models.fields.IntegerField', [], {'default': '10'}),
+            'more': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'tags': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['taggit.Tag']", 'symmetrical': 'False', 'blank': 'True'}),
+            'use_page_tags': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
         },
         'sites.site': {
             'Meta': {'ordering': "('domain',)", 'object_name': 'Site', 'db_table': "'django_site'"},
             'domain': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
+        },
+        'taggit.tag': {
+            'Meta': {'object_name': 'Tag'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '100'})
         }
     }
 

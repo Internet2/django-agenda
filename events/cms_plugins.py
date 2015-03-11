@@ -27,7 +27,6 @@ class EventsPluginForm(forms.ModelForm):
 
     class Meta:
         model = EventsPluginModel
-        fields = "__all__"
  
 class EventsPlugin(CMSPluginBase):
     model = EventsPluginModel
