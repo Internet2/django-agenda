@@ -26,7 +26,7 @@ class PublicationManager(CurrentSiteManager):
 # renaming per django 1.6 PendingDepreciationWarning
 #    def get_query_set(self):
     def get_queryset(self):
-        return super(CurrentSiteManager, self).get_query_set().filter(publish=True, publish_date__lte=timezone.now())
+        return super(CurrentSiteManager, self).get_queryset().filter(publish=True, publish_date__lte=timezone.now())
 
 class Event(models.Model):
     class Meta:
