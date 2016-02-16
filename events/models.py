@@ -128,7 +128,8 @@ class Calendar(models.Model):
 class EventsPluginModel(CMSPlugin):
     use_page_tags = models.BooleanField(default=False)
     tags = models.ManyToManyField(Tag, blank=True)
-    calendars = models.ManyToManyField(Calendar, null=True, blank=True)
+    #calendars = models.ManyToManyField(Calendar, null=True, blank=True)
+    calendars = models.ManyToManyField(Calendar, blank=True)
     EVENT_PLUGIN_DISPLAY_CHOICES = (
        ('list', 'List'),
        ('calendar', 'Calendar'),
