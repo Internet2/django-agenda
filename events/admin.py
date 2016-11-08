@@ -5,15 +5,17 @@ from django.utils.translation import ugettext as _
 from models import *
 
 from taggit.models import Tag
+from plaza2.apps.tagfilters.models import TagFamily
+from django.conf import settings
 
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
 class EventAdminForm(forms.ModelForm):
-    tags = forms.ModelMultipleChoiceField(
-        Tag.objects.all().order_by("name"),
-        widget=FilteredSelectMultiple("tags", False),
-        required=False)
+    #tags = forms.ModelMultipleChoiceField(
+    #    Tag.objects.all().order_by("name"),
+    #    widget=FilteredSelectMultiple("tags", False),
+    #    required=False)
 
     class Meta:
         model = Event
@@ -34,6 +36,7 @@ class EventAdmin(admin.ModelAdmin):
     fieldsets =  ((None, {'fields': ['title', 'slug', 'event_date', 'end_date', 'start_time', 'end_time', 'event_url', 'location', 'description', 'tags', 'calendar',]}),
                   (_('Advanced options'), {'classes' : ('collapse',),
                                            'fields'  : ('publish_date', 'publish', 'sites', 'author', 'allow_comments')}))
+    filter_horizontal = ('tags',)
     
     form = EventAdminForm
 
@@ -44,6 +47,14 @@ class EventAdmin(admin.ModelAdmin):
             kwargs.update({'initial': Site.objects.all()})
          
         return super(EventAdmin, self).formfield_for_dbfield(db_field, **kwargs)
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == 'tags':
+            if not request.user.is_superuser:
+                admin_tags = settings.SUPERUSER_TAGFAMILIES
+                tagnames = TagFamily.objects.filter(name__in=admin_tags).values_list('tags__name', flat=True).distinct()
+                kwargs["queryset"] = Tag.objects.exclude(name__in = tagnames)
+        return super(EventAdmin, self).formfield_for_manytomany(db_field, request, **kwargs )
     
 class CalendarAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
