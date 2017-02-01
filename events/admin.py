@@ -53,7 +53,7 @@ class EventAdmin(admin.ModelAdmin):
             if not request.user.is_superuser:
                 admin_tags = settings.SUPERUSER_TAGFAMILIES
                 tagnames = TagFamily.objects.filter(name__in=admin_tags).values_list('tags__name', flat=True).distinct()
-                kwargs["queryset"] = Tag.objects.exclude(name__in = tagnames)
+                kwargs["queryset"] = Tag.objects.exclude(name__in = tagnames).order_by('name')
         return super(EventAdmin, self).formfield_for_manytomany(db_field, request, **kwargs )
     
 class CalendarAdmin(admin.ModelAdmin):
