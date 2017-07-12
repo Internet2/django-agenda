@@ -3,6 +3,10 @@ from django.conf.urls import *
 from models import *
 
 from . import views
+from views.date_based import *
+from views.vobject_django import *
+from views.custom import *
+
 
 info_dict = {
     'queryset'                  : Event.published.all(),
