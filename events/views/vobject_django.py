@@ -2,7 +2,8 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from django.utils.html import strip_tags
 from django.http import HttpResponse
-from django.utils.tzinfo import FixedOffset
+#from django.utils.tzinfo import FixedOffset
+from django.utils.timezone import FixedOffset
 
 import vobject
 
