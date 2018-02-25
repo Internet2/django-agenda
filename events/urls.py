@@ -37,6 +37,6 @@ urlpatterns += [
 ]
 
 urlpatterns = [
-    url(r'^by_tags/(?P<calendar_list>[^//]+)/(?P<tag_list>[^//]+)/(?P<ordering>[^//]+)/(?P<start_date_range>[^//]+)/(?P<end_date_range>[^//]+)/(?P<page>[^//]+)$', views.custom.by_tags),
+    url(r'^by_tags/(?P<calendar_list>[^//]+)/(?P<tag_list>[^//]+)/(?P<ordering>[^//]+)/(?P<start_date_range>[^//]+)/(?P<end_date_range>[^//]+)/(?P<page>[^//]+)$', views.custom.by_tags, name='events_by_tags'),
 ]
 
