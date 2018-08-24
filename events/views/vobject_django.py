@@ -34,7 +34,7 @@ def icalendar(request, queryset, date_field, ical_filename,
         tzDifference = (now - utcnow)
     
     # Round the timezone offset to the nearest half hour.
-    tzOffsetMinutes = sign * ((tzDifference.seconds / 60 + 15) / 30) * 30
+    tzOffsetMinutes = sign * int((int(tzDifference.seconds / 60) + 15) / 30) * 30
     tzOffset = timedelta(minutes=tzOffsetMinutes)
     
     #cal.add('vtimezone').value = FixedOffset(tzOffset)
