@@ -24,13 +24,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='event',
             name='author',
-            field=models.ForeignKey(verbose_name='author', blank=True, to=settings.AUTH_USER_MODEL, null=True),
+            field=models.ForeignKey(verbose_name='author', blank=True, to=settings.AUTH_USER_MODEL, null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='event',
             name='calendar',
-            field=models.ForeignKey(related_name='events', blank=True, to='events.Calendar', null=True),
+            field=models.ForeignKey(related_name='events', blank=True, to='events.Calendar', null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(

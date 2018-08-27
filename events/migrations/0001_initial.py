@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='EventsPluginModel',
             fields=[
-                ('cmsplugin_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='cms.CMSPlugin')),
+                ('cmsplugin_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='cms.CMSPlugin', on_delete=models.CASCADE)),
                 ('use_page_tags', models.BooleanField(default=False)),
                 ('date_start_today', models.BooleanField(default=False, help_text=b"Show current and future events as of 'today'?")),
                 ('date_start', models.DateTimeField(null=True, verbose_name=b'Start date', blank=True)),

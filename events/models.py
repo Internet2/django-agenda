@@ -71,7 +71,7 @@ class Event(models.Model):
 
     description = models.TextField(_('description'), blank=True)
 
-    calendar = models.ForeignKey("Calendar", blank=True, null=True, related_name='events')
+    calendar = models.ForeignKey("Calendar", on_delete=models.CASCADE, blank=True, null=True, related_name='events')
 
     submitter = models.CharField(_('submitter'), max_length=255, blank=True)
 
@@ -86,7 +86,7 @@ class Event(models.Model):
     add_date = models.DateTimeField(_('add date'), editable=False, blank=True)
     mod_date = models.DateTimeField(_('modification date'), editable=False, blank=True)
     
-    author = models.ForeignKey(User, verbose_name=_('author'), db_index=True, blank=True, null=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_('author'), db_index=True, blank=True, null=True)
 
     publish_date = models.DateTimeField(_('publication date'), default=NOW)
     publish = models.BooleanField(_('publish'), default=True)
