@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.shortcuts import render
 
 from events.library import query_events, parse_date_range

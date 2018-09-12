@@ -1,8 +1,9 @@
+from __future__ import absolute_import
 from django.contrib import admin
 
 from django.utils.translation import ugettext as _
 
-from models import *
+from .models import *
 
 from taggit.models import Tag
 from plaza2.apps.tagfilters.models import TagFamily

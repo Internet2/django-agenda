@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django import template
 
 from calendar import Calendar
@@ -17,10 +18,10 @@ def do_calendar(parser, token):
         # Splitting by None == splitting by spaces.
         tag_name, arg = token.contents.split(None, 1)
     except ValueError:
-        raise template.TemplateSyntaxError, "%r tag requires arguments, %s" % (token.contents.split()[0], syntax_help)
+        raise template.TemplateSyntaxError("%r tag requires arguments, %s" % (token.contents.split()[0], syntax_help))
     m = re.search(r'for (.*?) (.*?) as (\w+)', arg)
     if not m:
-        raise template.TemplateSyntaxError, "%r tag had invalid arguments, %s" % (tag_name, syntax_help)
+        raise template.TemplateSyntaxError("%r tag had invalid arguments, %s" % (tag_name, syntax_help))
     
     return GetCalendarNode(*m.groups())
 
@@ -62,7 +63,7 @@ class IfInNode(template.Node):
 def ifin(parser, token, negate):
     bits = token.contents.split()
     if len(bits) != 3:
-        raise template.TemplateSyntaxError, "%r takes two arguments" % bits[0]
+        raise template.TemplateSyntaxError("%r takes two arguments" % bits[0])
     end_tag = 'end' + bits[0]
     nodelist_true = parser.parse(('else', end_tag))
     token = parser.next_token()

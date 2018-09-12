@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
 from datetime import datetime, timedelta
@@ -13,7 +14,7 @@ from taggit.models import Tag
 
 from events.models import Event, Calendar, EventsPluginModel
 
-from library import query_events, output_date_range
+from .library import query_events, output_date_range
 
 class EventsPluginForm(forms.ModelForm):
     tags = forms.ModelMultipleChoiceField(
@@ -61,10 +62,10 @@ class EventsPlugin(CMSPluginBase):
 
         tags = []
         if instance.use_page_tags:
-            tags.extend(map(lambda x: x.slug, get_page_tags(instance.page)))
-        tags.extend(map(lambda x: x.slug, instance.tags.all()))
+            tags.extend([x.slug for x in get_page_tags(instance.page)])
+        tags.extend([x.slug for x in instance.tags.all()])
 
-        calendars = map(lambda x: x.slug, instance.calendars.all())
+        calendars = [x.slug for x in instance.calendars.all()]
 
         events = query_events(calendars=calendars, tags=tags, ordering=instance.display_date_as,
                           min_start_date=min_start_date, max_start_date=max_start_date,
@@ -78,7 +79,7 @@ class EventsPlugin(CMSPluginBase):
         if instance.more:
             context['more'] = has_more
         context['display_as'] = instance.display_as
-        context['tags_str'] = build_tags_list(map(lambda x: Tag.objects.get(slug=x), tags))
+        context['tags_str'] = build_tags_list([Tag.objects.get(slug=x) for x in tags])
         context['calendars_str'] = build_tags_list(instance.calendars.all())
         context['ordering_str'] = instance.display_as
         context['start_date_str'] = output_date_range([ min_start_date, max_start_date ])

@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import logging
 
 from django import template
@@ -9,7 +10,7 @@ def do_previous(parser, token):
     # previous in <list> from <object> as <previous_object> 
     bits = token.contents.split()
     if len(bits) != 7:
-        raise template.TemplateSyntaxError, "%r takes six arguments" % bits[0]
+        raise template.TemplateSyntaxError("%r takes six arguments" % bits[0])
         
     return PreviousNode(bits[2], bits[4], bits[6])
 

@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import logging
 
 from datetime import datetime, timedelta
@@ -10,7 +11,7 @@ from django.utils import timezone
 
 from django.core.urlresolvers import reverse
 
-from models import Event
+from .models import Event
 
 class EventFeed(Feed):
     title = _('%s agenda' % Site.objects.get_current())

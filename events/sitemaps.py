@@ -1,6 +1,7 @@
+from __future__ import absolute_import
 from django.contrib.sitemaps import Sitemap
 
-from models import Event
+from .models import Event
 
 from django.contrib.comments.models import Comment
 

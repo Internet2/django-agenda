@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.utils.html import strip_tags

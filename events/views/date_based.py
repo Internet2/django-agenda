@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import logging 
 
 from datetime import datetime, timedelta
@@ -93,7 +94,7 @@ def archive(request, queryset, date_field,
     # Get relevant context (objects and dates)
     objects, object_context = get_object_context(queryset, date_field, year, month, day)
     if not objects and not allow_empty:
-        raise Http404, "No %s available" % model._meta.verbose_name
+        raise Http404("No %s available" % model._meta.verbose_name)
     
     logging.debug('Objects %s' % objects[:num_objects])
     logging.debug('Context object list name %s ' % ('%s_list' % template_object_name))
@@ -140,7 +141,7 @@ def object_detail(request, queryset, date_field,
     # Get relevant context (objects and dates)
     objects, object_context = get_object_context(queryset, date_field, year, month, day, slug)
     if not objects:
-      raise Http404, "No %s available" % model._meta.verbose_name
+      raise Http404("No %s available" % model._meta.verbose_name)
 
     my_object = objects[0]
     object_context.update({ template_object_name : my_object,

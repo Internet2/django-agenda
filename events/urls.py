@@ -1,11 +1,12 @@
+from __future__ import absolute_import
 from django.conf.urls import *
 
-from models import *
+from .models import *
 
 from . import views
-from views.date_based import *
-from views.vobject_django import *
-from views.custom import *
+from .views.date_based import *
+from .views.vobject_django import *
+from .views.custom import *
 
 
 info_dict = {
