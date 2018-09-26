@@ -26,7 +26,6 @@ from taggit.models import Tag
 #NOW=datetime.now().replace(tzinfo=timezone.utc) 
 NOW=datetime.now()
 
-@python_2_unicode_compatible
 class PublicationManager(CurrentSiteManager):
 # renaming per django 1.6 PendingDepreciationWarning
 #    def get_query_set(self):
