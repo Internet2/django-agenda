@@ -1,4 +1,7 @@
 from __future__ import absolute_import
+from __future__ import unicode_literals
+from django.utils.encoding import python_2_unicode_compatible
+
 from datetime import datetime
 from django.utils import timezone
 
@@ -23,12 +26,14 @@ from taggit.models import Tag
 #NOW=datetime.now().replace(tzinfo=timezone.utc) 
 NOW=datetime.now()
 
+@python_2_unicode_compatible
 class PublicationManager(CurrentSiteManager):
 # renaming per django 1.6 PendingDepreciationWarning
 #    def get_query_set(self):
     def get_queryset(self):
         return super(CurrentSiteManager, self).get_queryset().filter(publish=True, publish_date__lte=timezone.now())
 
+@python_2_unicode_compatible
 class Event(models.Model):
     class Meta:
         verbose_name = _('event')
@@ -38,7 +43,7 @@ class Event(models.Model):
         permissions = (("change_author", ugettext("Change author")),)
         unique_together = ("event_date", "slug")
 
-    def __unicode__(self):
+    def __str__(self):
         return _("%(title)s on %(event_date)s") % { 'title'      : self.title,
                                                     'event_date' : self.event_date }
 
@@ -112,6 +117,7 @@ class Event(models.Model):
                 import logging
                 logging.warn('Google ping on save did not work.')
 
+@python_2_unicode_compatible
 class Calendar(models.Model):
     name = models.CharField(_('name'), max_length=100, blank=True, null=True)
     slug = models.SlugField(unique=True)
@@ -121,11 +127,12 @@ class Calendar(models.Model):
         verbose_name = _('calendar')
         verbose_name_plural = _('calendars')
 
-    def __unicode__(self):
+    def __str__(self):
         if self.name:
             return self.name
         return _("Unnamed Calendar")
 
+@python_2_unicode_compatible
 class EventsPluginModel(CMSPlugin):
     use_page_tags = models.BooleanField(default=False)
     tags = models.ManyToManyField(Tag, blank=True)
@@ -152,7 +159,7 @@ class EventsPluginModel(CMSPlugin):
     limit = models.IntegerField(default=10)
     more = models.BooleanField(blank=True, default=True, help_text="Show more button?")
     
-    def __unicode__(self):
+    def __str__(self):
         return u'%s' % (self.tags.all())
 
     def copy_relations(self, oldinstance):
